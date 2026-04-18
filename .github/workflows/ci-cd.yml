@@ -26,7 +26,7 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DO_TOKEN }}
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Login registry
         run: doctl registry login
@@ -34,20 +34,20 @@ jobs:
       # Backend image
       - name: Build backend
         run: |
-          docker build -t registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:${{ steps.vars.outputs.tag }} ./backend
+          docker build -t registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-backend:${{ steps.vars.outputs.tag }} ./backend
 
       - name: Push backend
         run: |
-          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:${{ steps.vars.outputs.tag }}
+          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-backend:${{ steps.vars.outputs.tag }}
 
       # Frontend image
       - name: Build frontend
         run: |
-          docker build -t registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/frontend:${{ steps.vars.outputs.tag }} ./frontend
+          docker build -t registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }} ./frontend
 
       - name: Push frontend
         run: |
-          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/frontend:${{ steps.vars.outputs.tag }}
+          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }}
 
   # ========================
   # 2. DEPLOY (CD)
@@ -63,7 +63,7 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DO_TOKEN }}
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Kubeconfig
         run: doctl kubernetes cluster kubeconfig save ${{ secrets.CLUSTER_NAME }}
@@ -71,9 +71,9 @@ jobs:
       # Update backend image
       - name: Deploy backend
         run: |
-          kubectl set image deployment/backend backend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:${{ needs.build.outputs.image_tag }}
+          kubectl set image deployment/taskflow-backend taskflow-backend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-backend:${{ needs.build.outputs.image_tag }}
 
       # Update frontend image
       - name: Deploy frontend
         run: |
-          kubectl set image deployment/frontend frontend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/frontend:${{ needs.build.outputs.image_tag }}
+          kubectl set image deployment/taskflow-frontend taskflow-frontend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-frontend:${{ needs.build.outputs.image_tag }}

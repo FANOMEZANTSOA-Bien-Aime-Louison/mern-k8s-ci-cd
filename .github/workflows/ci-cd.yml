@@ -71,9 +71,9 @@ jobs:
       # Update backend image
       - name: Deploy backend
         run: |
-          kubectl set image deployment/taskflow-backend backend=registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-backend:${{ needs.build.outputs.image_tag }}
+          kubectl set image deployment/taskflow-backend backend=registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-backend:${{ needs.build.outputs.image_tag }} -n dev
 
       # Update frontend image
       - name: Deploy frontend
         run: |
-          kubectl set image deployment/taskflow-frontend frontend=registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ needs.build.outputs.image_tag }}
+          kubectl set image deployment/taskflow-frontend frontend=registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ needs.build.outputs.image_tag }} -n dev

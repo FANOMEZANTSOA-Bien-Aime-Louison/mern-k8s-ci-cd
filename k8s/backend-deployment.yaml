@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: sandra1002/taskflow-backend:initial
+          image: registry.digitalocean.com/louison/taskflow-backend:initial
           ports:
             - containerPort: 5000
           envFrom:

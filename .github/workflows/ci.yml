@@ -1,0 +1,79 @@
+name: CI-CD DOKS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+
+  # ========================
+  # 1. BUILD & PUSH (CI)
+  # ========================
+  build:
+    runs-on: ubuntu-latest
+
+    outputs:
+      image_tag: ${{ steps.vars.outputs.tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: vars
+        run: echo "tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_TOKEN }}
+
+      - name: Login registry
+        run: doctl registry login
+
+      # Backend image
+      - name: Build backend
+        run: |
+          docker build -t registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:${{ steps.vars.outputs.tag }} ./backend
+
+      - name: Push backend
+        run: |
+          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:${{ steps.vars.outputs.tag }}
+
+      # Frontend image
+      - name: Build frontend
+        run: |
+          docker build -t registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/frontend:${{ steps.vars.outputs.tag }} ./frontend
+
+      - name: Push frontend
+        run: |
+          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/frontend:${{ steps.vars.outputs.tag }}
+
+  # ========================
+  # 2. DEPLOY (CD)
+  # ========================
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_TOKEN }}
+
+      - name: Kubeconfig
+        run: doctl kubernetes cluster kubeconfig save ${{ secrets.CLUSTER_NAME }}
+
+      # Update backend image
+      - name: Deploy backend
+        run: |
+          kubectl set image deployment/backend backend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/backend:${{ needs.build.outputs.image_tag }}
+
+      # Update frontend image
+      - name: Deploy frontend
+        run: |
+          kubectl set image deployment/frontend frontend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/frontend:${{ needs.build.outputs.image_tag }}

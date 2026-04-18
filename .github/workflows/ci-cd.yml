@@ -38,16 +38,16 @@ jobs:
 
       - name: Push backend
         run: |
-          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-backend:${{ steps.vars.outputs.tag }}
+          docker push registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-backend:${{ steps.vars.outputs.tag }}
 
       # Frontend image
       - name: Build frontend
         run: |
-          docker build -t registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }} ./frontend
+          docker build -t registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }} ./frontend
 
       - name: Push frontend
         run: |
-          docker push registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }}
+          docker push registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }}
 
   # ========================
   # 2. DEPLOY (CD)
@@ -66,14 +66,14 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Kubeconfig
-        run: doctl kubernetes cluster kubeconfig save ${{ secrets.CLUSTER_NAME }}
+        run: doctl kubernetes cluster kubeconfig save ${{ vars.CLUSTER_NAME }}
 
       # Update backend image
       - name: Deploy backend
         run: |
-          kubectl set image deployment/taskflow-backend taskflow-backend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-backend:${{ needs.build.outputs.image_tag }}
+          kubectl set image deployment/taskflow-backend taskflow-backend=registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-backend:${{ needs.build.outputs.image_tag }}
 
       # Update frontend image
       - name: Deploy frontend
         run: |
-          kubectl set image deployment/taskflow-frontend taskflow-frontend=registry.digitalocean.com/${{ secrets.REGISTRY_NAME }}/taskflow-frontend:${{ needs.build.outputs.image_tag }}
+          kubectl set image deployment/taskflow-frontend taskflow-frontend=registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ needs.build.outputs.image_tag }}

@@ -6,7 +6,12 @@ metadata:
   labels:
     app: taskflow-frontend
 spec:
-  replicas: 3
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: taskflow-frontend

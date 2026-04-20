@@ -1,4 +1,3 @@
-```markdown
 <div align="center">
 
 # ☸️ mern-k8s-ci-cd
@@ -9,7 +8,7 @@
 [![CI/CD](https://github.com/FANOMEZANTSOA-Bien-Aime-Louison/mern-k8s-ci-cd/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/FANOMEZANTSOA-Bien-Aime-Louison/mern-k8s-ci-cd/actions)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-DOKS-326CE5?logo=kubernetes&logoColor=white)](https://cloud.digitalocean.com/kubernetes)
 [![Docker](https://img.shields.io/badge/Registry-DigitalOcean-0080FF?logo=digitalocean&logoColor=white)](https://registry.digitalocean.com)
-[![Stack](https://img.shields.io/badge/Stack-MERN-13AA52?logo=mongodb&logoColor=white)](#stack)
+[![Stack](https://img.shields.io/badge/Stack-MERN-13AA52?logo=mongodb&logoColor=white)](#️-stack)
 
 </div>
 
@@ -17,7 +16,7 @@
 
 ## 🎯 DevOps Problem Statement
 
-Deploying a multi-service application to production raises concrete challenges  
+Deploying a multi-service application to production raises concrete challenges
 that this project addresses one by one:
 
 | ❌ Problem | ✅ Solution applied |
@@ -37,7 +36,7 @@ that this project addresses one by one:
 
 ![Architecture DOKS](docs/architecture.png)
 
-### Traffic flow
+### Traffic Flow
 
 ```
 Internet
@@ -50,8 +49,8 @@ Ingress Nginx  ─── namespace: dev
    ├── /api/*  ──► ClusterIP Service :5000  ──► Backend Pods  (Node.js)
    └── /       ──► ClusterIP Service :80    ──► Frontend Pods (Nginx :8080)
                                                       │
-                                         DO Managed MongoDB
-                                         (fra1 — TLS — replicaSet)
+                                             DO Managed MongoDB
+                                             (fra1 — TLS — replicaSet)
 ```
 
 ### Kubernetes Manifests
@@ -111,7 +110,7 @@ needs: build                    ← blocked until CI passes
    └─► Kubernetes RollingUpdate → 0 downtime
 ```
 
-### Technical decisions
+### Technical Decisions
 
 | Choice | Justification |
 |---|---|
@@ -260,4 +259,3 @@ curl http://<LOAD_BALANCER_IP>/api/health
 `Containerization` → `Private Registry` → `K8s Orchestration` → `Automated CI/CD` → `Auto-scaling` → `Zero Downtime`
 
 </div>
-```

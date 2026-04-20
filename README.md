@@ -34,7 +34,7 @@ that this project addresses one by one:
 
 ## 🏗️ Infrastructure Architecture
 
-![Architecture DOKS](docs/architecture.png)
+![Architecture DOKS](docs/architecture.svg)
 
 ### Traffic Flow
 
@@ -84,7 +84,7 @@ Ingress Nginx  ─── namespace: dev
 
 ## ⚙️ CI/CD Pipeline
 
-![CI/CD Workflow](docs/cicd-workflow.png)
+![CI/CD Workflow](docs/cicd-workflow.svg)
 
 **Trigger**: `push` on branch `main`
 

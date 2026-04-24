@@ -43,7 +43,7 @@ jobs:
       # Frontend image
       - name: Build frontend
         run: |
-          docker build --build-arg VITE_API_URL=/api-t registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }} ./frontend
+          docker build --build-arg VITE_API_URL=/api -t registry.digitalocean.com/${{ vars.REGISTRY_NAME }}/taskflow-frontend:${{ steps.vars.outputs.tag }} ./frontend
 
       - name: Push frontend
         run: |
